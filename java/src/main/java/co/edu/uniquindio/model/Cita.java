@@ -1,16 +1,19 @@
 package co.edu.uniquindio.model;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-public class Cita {
-    private int dia;
-    private int hora;
-    private boolean ocupada;
+@Getter
+public class Cita implements Comparable<Cita> {
+    private String nombre;
+    private int tiempo;
 
-    public Cita(int dia, int hora) {
-        this.dia = dia;
-        this.hora = hora;
-        this.ocupada = false;
+    public Cita(String nombre, int tiempo) {
+        this.nombre = nombre;
+        this.tiempo = tiempo;
+    }
+
+    @Override
+    public int compareTo(Cita other) {
+        return Integer.compare(this.tiempo, other.tiempo);
     }
 }
