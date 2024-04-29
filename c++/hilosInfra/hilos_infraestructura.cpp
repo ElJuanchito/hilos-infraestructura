@@ -9,7 +9,10 @@ using namespace std;
 
 class Cita {
 public:
-    Cita(const string& nombre, int tiempo) : nombre(nombre), tiempo(tiempo) {}
+    Cita(const string& nombre, int tiempo) {
+        this->nombre = nombre;
+        this->tiempo = tiempo;
+    }
 
     string nombre;
     int tiempo;
@@ -17,15 +20,17 @@ public:
 
 class EPS {
 public:
-    EPS(int asesores) : asesores(asesores) {}
+    EPS(int asesores) {
+        this->asesores = asesores;
+    }
 
     void agregarCita(const Cita& cita) {
-        lock_guard<mutex> lock(mutex_);
+        lock_guard<mutex> lock(locker);
         citas.push(cita);
     }
 
     Cita eliminarPrimero() {
-        lock_guard<mutex> lock(mutex_);
+        lock_guard<mutex> lock(locker);
         if (!citas.empty()) {
             Cita cita = citas.front();
             citas.pop();
@@ -52,7 +57,7 @@ public:
             hilos_atencion.emplace_back(&EPS::atender, this, "Asesor " + to_string(i), i % 2);
         }
 
-        for (auto& hilo_atencion : hilos_atencion) {
+        for (thread& hilo_atencion : hilos_atencion) {
             hilo_atencion.join();
         }
     }
@@ -60,7 +65,7 @@ public:
 private:
     queue<Cita> citas;
     int asesores;
-    mutex mutex_;
+    mutex locker;
 };
 
 int main() {
